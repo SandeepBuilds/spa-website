@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Euphoric Soul | Wellness & Beauty Sanctuary</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Tenor+Sans&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: '#B2BDA3',
+                        sand: '#EBDFCE',
+                        pearl: '#F4E5D9',
+                        peach: '#F8D3BB',
+                        stone: '#978671'
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Tenor Sans', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #F4E5D9; color: #978671; overflow-x: hidden; }
+        
+        /* Fixed Catchy Navigation */
+        nav { transition: background-color 0.3s ease, box-shadow 0.3s ease; }
+        nav.scrolled { background-color: #978671; color: #F4E5D9; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+        nav.scrolled .nav-link { color: #F4E5D9; }
+        nav.scrolled .btn-nav { background-color: #F4E5D9; color: #978671; border-color: #F4E5D9; }
+        
+        .nav-link { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; transition: 0.3s; }
+        .nav-link:hover { color: #F8D3BB; }
+
+        /* Page Management */
+        .page-section {
+            display: none; 
+            min-height: 100vh;
+            padding-top: 80px; /* Space for fixed nav */
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .active-section { display: flex !important; }
+
+        /* Hero Slider */
+        .hero-section { height: calc(100vh - 80px); width: 100%; position: relative; }
+        .hero-slide { background-size: cover; background-position: center; height: 100%; }
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(to bottom, rgba(151,134,113,0.3), rgba(151,134,113,0.7));
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;
+        }
+
+        /* Forms */
+        input, select, textarea {
+            width: 100%; padding: 15px 0; margin-bottom: 25px;
+            background: transparent; border: none; border-bottom: 1px solid #978671;
+            color: #978671; outline: none; font-size: 0.9rem;
+        }
+        input::placeholder, textarea::placeholder { color: rgba(151, 134, 113, 0.6); }
+        
+        /* Swiper Dots */
+        .swiper-pagination-bullet { background: #F4E5D9 !important; opacity: 0.6; }
+        .swiper-pagination-bullet-active { background: #F8D3BB !important; opacity: 1; }
+
+        /* Classy Modal Styles */
+        #booking-modal {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(151, 134, 113, 0.85);
+            backdrop-filter: blur(10px);
+            display: none; align-items: center; justify-content: center;
+            opacity: 0; transition: opacity 0.4s ease;
+        }
+        #booking-modal.active { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background-color: #F4E5D9; 
+            border: 1px solid rgba(151, 134, 113, 0.3);
+            border-radius: 20px;
+            padding: 50px;
+            width: 90%; max-width: 500px;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+            position: relative;
+        }
+        #booking-modal.active .modal-content { transform: translateY(0); }
+
+        .modal-close {
+            position: absolute; top: 20px; right: 20px;
+            background: none; border: none; font-size: 1.5rem; color: #978671;
+            cursor: pointer; transition: color 0.3s ease;
+        }
+        .modal-close:hover { color: #B2BDA3; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav id="navbar" class="fixed w-full z-50 top-0 py-6 px-8 md:px-16 flex justify-between items-center text-stone border-b border-stone/20 bg-pearl">
+        <span class="font-serif text-xl tracking-[0.3em] uppercase cursor-pointer" onclick="navigateToPage('home')">The Euphoric Soul</span>
+        <div class="hidden lg:flex space-x-10 items-center">
+            <span class="nav-link cursor-pointer" onclick="navigateToPage('home')">Home</span>
+            <span class="nav-link cursor-pointer" onclick="navigateToPage('about')">About Us</span>
+            <span class="nav-link cursor-pointer" onclick="navigateToPage('services')">Services</span>
+            <span class="nav-link cursor-pointer" onclick="navigateToPage('contact')">Contact</span>
+        </div>
+        <button onclick="openModal()" class="btn-nav hidden md:inline-block px-8 py-3 text-xs tracking-widest uppercase border border-stone rounded-full hover:bg-sage hover:text-white hover:border-sage transition cursor-pointer">Book Now</button>
+    </nav>
+
+    <main id="page-content">
+
+        <div id="home-page" class="page-section active-section">
+            <header class="hero-section">
+                <div class="swiper heroSwiper h-full">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide hero-slide" style="background-image: url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=2000');">
+                            <div class="hero-overlay">
+                                <span class="text-pearl tracking-[0.2em] uppercase text-sm mb-4">The Art of Stillness</span>
+                                <h1 class="font-serif text-5xl md:text-7xl text-pearl mb-6 tracking-widest uppercase">Divine Renewal</h1>
+                                <p class="text-pearl/80 tracking-widest uppercase text-xs mb-10">A Metamorphosis of Spirit</p>
+                                <button onclick="navigateToPage('services')" class="px-10 py-4 border border-pearl text-pearl rounded-full tracking-widest text-xs uppercase hover:bg-sage hover:border-sage transition cursor-pointer">Begin Journey</button>
+                            </div>
+                        </div>
+                        <div class="swiper-slide hero-slide" style="background-image: url('https://images.unsplash.com/photo-1515377905703-c4788e51af15?q=80&w=2000');">
+                            <div class="hero-overlay">
+                                <span class="text-pearl tracking-[0.2em] uppercase text-sm mb-4">Ancient Healing</span>
+                                <h1 class="font-serif text-5xl md:text-7xl text-pearl mb-6 tracking-widest uppercase">Scalp Alchemy</h1>
+                                <p class="text-pearl/80 tracking-widest uppercase text-xs mb-10">Rooted in Tradition</p>
+                                <button onclick="openModal()" class="px-10 py-4 border border-pearl text-pearl rounded-full tracking-widest text-xs uppercase hover:bg-sage hover:border-sage transition cursor-pointer">Begin Journey</button>
+                            </div>
+                        </div>
+                        <div class="swiper-slide hero-slide" style="background-image: url('https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?q=80&w=2000');">
+                            <div class="hero-overlay">
+                                <span class="text-pearl tracking-[0.2em] uppercase text-sm mb-4">Infinite Clarity</span>
+                                <h1 class="font-serif text-5xl md:text-7xl text-pearl mb-6 tracking-widest uppercase">Glass Skin</h1>
+                                <p class="text-pearl/80 tracking-widest uppercase text-xs mb-10">The Essence of Radiance</p>
+                                <button onclick="navigateToPage('services')" class="px-10 py-4 border border-pearl text-pearl rounded-full tracking-widest text-xs uppercase hover:bg-sage hover:border-sage transition cursor-pointer">Begin Journey</button>
+                            </div>
+                        </div>
+                        <div class="swiper-slide hero-slide" style="background-image: url('https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=2000');">
+                            <div class="hero-overlay">
+                                <span class="text-pearl tracking-[0.2em] uppercase text-sm mb-4">Quiet Luxury</span>
+                                <h1 class="font-serif text-5xl md:text-7xl text-pearl mb-6 tracking-widest uppercase">Stillness</h1>
+                                <p class="text-pearl/80 tracking-widest uppercase text-xs mb-10">A Sanctuary for the Soul</p>
+                                <button onclick="openModal()" class="px-10 py-4 border border-pearl text-pearl rounded-full tracking-widest text-xs uppercase hover:bg-sage hover:border-sage transition cursor-pointer">Begin Journey</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+            </header>
+
+            <section class="py-24 bg-sand">
+                <div class="container mx-auto px-8 lg:px-16 grid md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">Signature Philosophy</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone mb-8">A Ritual of Grace</h2>
+                        <p class="text-stone/90 font-light leading-relaxed mb-6">We believe that beauty is not a surface-level pursuit, but an intimate dialogue between the body and the spirit. Our rituals are meticulously designed to act as a catalyst for this connection.</p>
+                        <p class="text-stone/90 font-light leading-relaxed mb-10">Every movement, from the application of our artisanal oils to the clinical precision of our Korean skin protocols, is performed with intentional grace. We invite you to shed the weight of the outside world and re-enter your life with a restored sense of luminosity.</p>
+                        <button onclick="navigateToPage('about')" class="inline-block px-8 py-3 bg-sage text-white rounded-full uppercase tracking-widest text-xs hover:bg-peach hover:text-stone transition cursor-pointer">Discover Our Legacy</button>
+                    </div>
+                    <div class="h-[600px] rounded-2xl overflow-hidden shadow-lg">
+                        <img src="https://i.pinimg.com/736x/c4/fc/02/c4fc02013ac98ec4287b953e3d003715.jpg" alt="Philosophy" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-24 bg-pearl">
+                <div class="container mx-auto px-8 lg:px-16">
+                    <div class="text-center mb-16">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">The Collections</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone">Infinite Rituals</h2>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-10">
+                        <div class="group cursor-pointer">
+                            <div class="h-[400px] rounded-2xl overflow-hidden mb-6">
+                                <img src="https://images.unsplash.com/photo-1560750588-73207b1ef5b8?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            </div>
+                            <h3 class="font-serif text-2xl text-stone mb-2">Hair Alchemy</h3>
+                            <p class="text-stone/80 font-light text-sm mb-4">Korean scalp scaling rituals.</p>
+                            <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <div class="h-[400px] rounded-2xl overflow-hidden mb-6">
+                                <img src="https://i.pinimg.com/736x/eb/82/3e/eb823eccf5222d026957087c7be0e5a3.jpg" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            </div>
+                            <h3 class="font-serif text-2xl text-stone mb-2">Skin Science</h3>
+                            <p class="text-stone/80 font-light text-sm mb-4">Glass Skin & Clinical glow.</p>
+                            <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                        </div>
+                        <div class="group cursor-pointer">
+                            <div class="h-[400px] rounded-2xl overflow-hidden mb-6">
+                                <img src="https://lh3.googleusercontent.com/p/AF1QipPK6B1EggeAHzimaRX8G_3pAd1yAx_qTeKwLDv7=s1360-w1360-h1020-rw" class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            </div>
+                            <h3 class="font-serif text-2xl text-stone mb-2">Our Sanctuary</h3>
+                            <p class="text-stone/80 font-light text-sm mb-4">Pure luxury in Lokhandwala.</p>
+                            <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-24 bg-pearl border-t border-stone/10">
+                <div class="container mx-auto px-8 lg:px-16">
+                    <div class="text-center mb-16">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">The Sanctuary</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone">Explore the Space</h2>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="h-[350px] md:h-[500px] rounded-2xl overflow-hidden shadow-sm">
+                            <img src="https://lh3.googleusercontent.com/p/AF1QipMQ9M9B5YXNPP1zUEyRAI2qF_xG5rwkHtrg9Juv=s1360-w1360-h1020-rw" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="Space 1">
+                        </div>
+                        <div class="h-[350px] md:h-[500px] rounded-2xl overflow-hidden shadow-sm">
+                            <img src="https://lh3.googleusercontent.com/p/AF1QipMct2a202j8X2_4M42rLfUZvJLivdDMWImbHkrB=s1360-w1360-h1020-rw" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="Space 2">
+                        </div>
+                        <div class="h-[350px] md:h-[500px] rounded-2xl overflow-hidden shadow-sm">
+                            <img src="https://lh3.googleusercontent.com/p/AF1QipMzoxuhXwe9fySZSwX7dtBNy1y9rKHzEwri7uBV=s1360-w1360-h1020-rw" class="w-full h-full object-cover hover:scale-105 transition duration-700" alt="Space 3">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="py-24 bg-sand">
+                <div class="container mx-auto px-8 lg:px-16 grid md:grid-cols-2 gap-16 items-center">
+                    <div class="flex flex-col justify-center">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">Begin Your Transformation</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone mb-12">The Sanctuary</h2>
+                        <div class="mb-8">
+                            <h3 class="font-serif text-2xl text-stone mb-2">Location</h3>
+                            <p class="text-stone/80 font-light">Shop No. 16, Palace CHS Ltd, Off New Link Rd,<br>opposite Runwal Elegante, Andheri West, Mumbai</p>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-2xl text-stone mb-2">Concierge</h3>
+                            <p class="text-stone/80 font-light">+91 98765 43210</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center bg-pearl p-10 md:p-14 rounded-2xl shadow-sm border border-stone/10">
+                        <div class="text-center">
+                            <h3 class="font-serif text-3xl text-stone mb-6">Secure Your Session</h3>
+                            <p class="text-stone/80 font-light mb-8">Our concierge is ready to craft your bespoke experience.</p>
+                            <button onclick="openModal()" class="px-10 py-4 bg-transparent border border-stone text-stone uppercase tracking-[0.2em] text-xs rounded-full hover:bg-stone hover:text-pearl transition duration-500 cursor-pointer">Initiate Booking</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="py-16 bg-pearl border-t border-stone/20 mt-auto">
+                <div class="container mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+                    <div class="font-serif text-2xl tracking-[0.3em] uppercase text-stone leading-snug text-center md:text-left">
+                        The Euphoric<br>Soul
+                    </div>
+                    <div class="flex space-x-10 text-[10px] tracking-[0.2em] font-medium text-stone/70 uppercase">
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('home')">Home</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('services')">Services</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('contact')">Contact</span>
+                    </div>
+                    <div class="text-[10px] text-stone/50 tracking-[0.2em] uppercase text-center md:text-right leading-loose">
+                        © 2026 THE EUPHORIC SOUL<br>SANCTUARY.<br>MUMBAI, MAHARASHTRA.
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div id="about-page" class="page-section bg-sand">
+            <section class="py-24">
+                <div class="container mx-auto px-8 lg:px-16 grid md:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">Signature Philosophy</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone mb-8">A Ritual of Grace</h2>
+                        <p class="text-stone/90 font-light leading-relaxed mb-6">We believe that beauty is not a surface-level pursuit, but an intimate dialogue between the body and the spirit. Our rituals are meticulously designed to act as a catalyst for this connection.</p>
+                        <p class="text-stone/90 font-light leading-relaxed mb-10">Every movement, from the application of our artisanal oils to the clinical precision of our Korean skin protocols, is performed with intentional grace. We invite you to shed the weight of the outside world and re-enter your life with a restored sense of luminosity.</p>
+                        <button onclick="navigateToPage('services')" class="inline-block px-8 py-3 bg-sage text-white rounded-full uppercase tracking-widest text-xs hover:bg-peach hover:text-stone transition cursor-pointer">Discover Our Legacy</button>
+                    </div>
+                    <div class="h-[600px] rounded-2xl overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=1000" alt="Philosophy" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-24 bg-pearl">
+                <div class="container mx-auto px-8 lg:px-16 grid md:grid-cols-2 gap-16 items-center">
+                    <div class="h-[600px] rounded-2xl overflow-hidden shadow-lg order-2 md:order-1">
+                        <img src="https://lh3.googleusercontent.com/p/AF1QipNSOkzplk2_mDuR5mriiHvlnB8RExrxOgXYh1LX=s1360-w1360-h1020-rw" alt="Founder" class="w-full h-full object-cover">
+                    </div>
+                    <div class="order-1 md:order-2">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">Our Founder</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone mb-8">Mugdha Singh</h2>
+                        <p class="text-stone/90 font-light leading-relaxed mb-6">Founded in 2025, The Euphoric Soul is the culmination of Mugdha Singh’s lifelong obsession with the science of radiance. She spent years immersing herself in advanced skincare philosophies in **Seoul, South Korea**.</p>
+                        <p class="text-stone/90 font-light leading-relaxed mb-10">Her vision was to bring the surgical precision of Korean "Glass Skin" protocols and the holistic depth of Eastern scalp rituals to Mumbai, creating a destination for the truly intentional.</p>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="py-16 bg-pearl border-t border-stone/20 mt-auto">
+                <div class="container mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+                    <div class="font-serif text-2xl tracking-[0.3em] uppercase text-stone leading-snug text-center md:text-left">
+                        The Euphoric<br>Soul
+                    </div>
+                    <div class="flex space-x-10 text-[10px] tracking-[0.2em] font-medium text-stone/70 uppercase">
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('home')">Home</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('services')">Services</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('contact')">Contact</span>
+                    </div>
+                    <div class="text-[10px] text-stone/50 tracking-[0.2em] uppercase text-center md:text-right leading-loose">
+                        © 2026 THE EUPHORIC SOUL<br>SANCTUARY.<br>MUMBAI, MAHARASHTRA.
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div id="services-page" class="page-section bg-pearl">
+            <section class="py-24">
+                <div class="container mx-auto px-8 lg:px-16 max-w-6xl">
+                    
+                    <div class="text-center mb-24">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">The Compendium</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone">Divine Menu</h2>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-16 items-start mb-32">
+                        <div>
+                            <div class="mb-16">
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">01. Scalp Alchemy</h3>
+                                <p class="text-stone/80 font-light mb-8">Deep-tissue detoxification and follicle nutrition.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Korean Experience Hair & Scalp</h4>
+                                            <p class="text-sm font-light text-stone/70">Multi-step detox utilizing micro-mist and high-frequency therapy.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Thai Experience Hair Ritual</h4>
+                                            <p class="text-sm font-light text-stone/70">Holistic pressure point massage paired with organic herbal infusions.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Medical Scalp (Dry/Oily/Fall)</h4>
+                                            <p class="text-sm font-light text-stone/70">Clinical solutions for dandruff control and reactive hair loss.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">02. Advanced Restoration</h3>
+                                <p class="text-stone/80 font-light mb-8">Protein-rich molecular structural repairs.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Botox & Biotin Infusion</h4>
+                                            <p class="text-sm font-light text-stone/70">Intense hydration and vitamin sealing for chemically treated hair.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Keratin & Kerasmooth Rituals</h4>
+                                            <p class="text-sm font-light text-stone/70">Long-lasting frizz control and silk-finish structural alignment.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Nanoplastia / Bluetox Recovery</h4>
+                                            <p class="text-sm font-light text-stone/70">Premium amino-acid based straightening with zero formaldehyde.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-lg mb-8">
+                                <img src="https://i.pinimg.com/736x/16/84/04/168404f58700cedc067f1dfb3b3296fc.jpg" alt="Hair and Scalp Suite" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-sand p-10 rounded-2xl shadow-sm border border-stone/10">
+                                <h3 class="font-serif text-2xl text-stone mb-3">Hair & Scalp Suite</h3>
+                                <p class="text-stone/80 font-light text-sm mb-6 leading-relaxed">A specialized sanctuary for cranial wellness. We merge Eastern therapeutic traditions with molecular science to restore hair vitality from the follicle up.</p>
+                                <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-16 items-start mb-32">
+                        <div class="flex flex-col order-2 md:order-1">
+                            <div class="h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-lg mb-8">
+                                <img src="https://i.pinimg.com/736x/eb/82/3e/eb823eccf5222d026957087c7be0e5a3.jpg" alt="Skin Radiance Suite" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-sand p-10 rounded-2xl shadow-sm border border-stone/10">
+                                <h3 class="font-serif text-2xl text-stone mb-3">Skin Radiance Suite</h3>
+                                <p class="text-stone/80 font-light text-sm mb-6 leading-relaxed">Inspired by the rigorous aesthetic precision of Korea. Our protocols focus on cellular transparency, deep hydration, and timeless elasticity.</p>
+                                <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                            </div>
+                        </div>
+
+                        <div class="order-1 md:order-2">
+                            <div class="mb-16">
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">03. Epidermal Radiance</h3>
+                                <p class="text-stone/80 font-light mb-8">The signature Seoul glow, unveiled in Mumbai.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Korean Glass Skin Facial</h4>
+                                            <p class="text-sm font-light text-stone/70">Multilayer hydration for a translucent, reflective skin finish.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Hydra Facial & O2 Infusion</h4>
+                                            <p class="text-sm font-light text-stone/70">Deep vortex pore cleansing paired with pure oxygen delivery.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">PDRN / Hyaluronic Therapy</h4>
+                                            <p class="text-sm font-light text-stone/70">Premium salmon-DNA regenerative treatment for barrier repair.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Age Lock & Golden Glow</h4>
+                                            <p class="text-sm font-light text-stone/70">Intensive lifting ritual using 24k gold and anti-aging peptide masks.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">04. Clinical Skin Science</h3>
+                                <p class="text-stone/80 font-light mb-8">The frontier of aesthetic skin regeneration.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Nano Needle / LED Therapy</h4>
+                                            <p class="text-sm font-light text-stone/70">Precision transdermal delivery using non-invasive light technology.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Remy Laure Premium Mask</h4>
+                                            <p class="text-sm font-light text-stone/70">Luxury sediment mask experience for instant contouring and brightening.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-16 items-start">
+                        <div>
+                            <div class="mb-16">
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">05. Body Sanctuary</h3>
+                                <p class="text-stone/80 font-light mb-8">Grounding therapies for physical and mental recalibration.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Full Body Deep Release Ritual</h4>
+                                            <p class="text-sm font-light text-stone/70">Signature pressure therapy targeting deep muscle knots and tension.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Premium Body Polishing</h4>
+                                            <p class="text-sm font-light text-stone/70">Artisanal exfoliation followed by a hydrating glow-sealing massage.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Targeted Relief (Head/Back/Foot)</h4>
+                                            <p class="text-sm font-light text-stone/70">Express therapeutic work focused on your primary stress centers.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-serif text-3xl text-stone mb-4 border-b border-stone/20 pb-4">06. Artisanal Grooming</h3>
+                                <p class="text-stone/80 font-light mb-8">The final touch in high-end refinement.</p>
+                                <div class="space-y-6">
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Silk Waxing & Brazilian Suite</h4>
+                                            <p class="text-sm font-light text-stone/70">Pain-minimized hair removal using premium hypoallergenic resins.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Precision Threading & Brow Design</h4>
+                                            <p class="text-sm font-light text-stone/70">Facial sculpting for a balanced, lifted aesthetic profile.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-baseline border-b border-stone/10 pb-4">
+                                        <div>
+                                            <h4 class="text-lg text-stone font-medium">Nail Artistry & Spa Pedicure</h4>
+                                            <p class="text-sm font-light text-stone/70">Intricate hand-painted gel designs paired with clinical foot care.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <div class="h-[400px] md:h-[500px] rounded-2xl overflow-hidden shadow-lg mb-8">
+                                <img src="https://i.pinimg.com/736x/4c/de/2d/4cde2dc3569742c00419795f600b0218.jpg" alt="The Mastery of Detail" class="w-full h-full object-cover">
+                            </div>
+                            <div class="bg-sand p-10 rounded-2xl shadow-sm border border-stone/10">
+                                <h3 class="font-serif text-2xl text-stone mb-3">The Mastery of Detail</h3>
+                                <p class="text-stone/80 font-light text-sm mb-6 leading-relaxed">From the architecture of an eyebrow to the deep release of a muscle. We attend to the fine point of your being with artistic precision.</p>
+                                <button onclick="openModal()" class="text-xs uppercase tracking-widest text-sage font-medium border-b border-sage pb-1 bg-transparent cursor-pointer">Book Session</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <footer class="py-16 bg-pearl border-t border-stone/20 mt-auto">
+                <div class="container mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+                    <div class="font-serif text-2xl tracking-[0.3em] uppercase text-stone leading-snug text-center md:text-left">
+                        The Euphoric<br>Soul
+                    </div>
+                    <div class="flex space-x-10 text-[10px] tracking-[0.2em] font-medium text-stone/70 uppercase">
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('home')">Home</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('services')">Services</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('contact')">Contact</span>
+                    </div>
+                    <div class="text-[10px] text-stone/50 tracking-[0.2em] uppercase text-center md:text-right leading-loose">
+                        © 2026 THE EUPHORIC SOUL<br>SANCTUARY.<br>MUMBAI, MAHARASHTRA.
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <div id="contact-page" class="page-section bg-sand">
+            <section class="py-24 grow flex items-center justify-center">
+                <div class="container mx-auto px-8 lg:px-16 grid md:grid-cols-2 gap-16 items-center">
+                    <div class="flex flex-col justify-center">
+                        <p class="tracking-[0.2em] uppercase text-xs text-stone mb-4">Begin Your Transformation</p>
+                        <h2 class="font-serif text-4xl md:text-5xl text-stone mb-12">The Sanctuary</h2>
+                        <div class="mb-8">
+                            <h3 class="font-serif text-2xl text-stone mb-2">Location</h3>
+                            <p class="text-stone/80 font-light">Shop No. 16, Palace CHS Ltd, Off New Link Rd,<br>opposite Runwal Elegante, Andheri West, Mumbai</p>
+                        </div>
+                        <div>
+                            <h3 class="font-serif text-2xl text-stone mb-2">Concierge</h3>
+                            <p class="text-stone/80 font-light">+91 98765 43210</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center bg-pearl p-10 md:p-14 rounded-2xl shadow-sm border border-stone/10">
+                        <div class="text-center">
+                            <h3 class="font-serif text-3xl text-stone mb-6">Secure Your Session</h3>
+                            <p class="text-stone/80 font-light mb-8">Our concierge is ready to craft your bespoke experience.</p>
+                            <button onclick="openModal()" class="px-10 py-4 bg-transparent border border-stone text-stone uppercase tracking-[0.2em] text-xs rounded-full hover:bg-stone hover:text-pearl transition duration-500 cursor-pointer">Initiate Booking</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="py-16 bg-pearl border-t border-stone/20 mt-auto">
+                <div class="container mx-auto px-8 lg:px-16 flex flex-col md:flex-row justify-between items-center md:items-start gap-8">
+                    <div class="font-serif text-2xl tracking-[0.3em] uppercase text-stone leading-snug text-center md:text-left">
+                        The Euphoric<br>Soul
+                    </div>
+                    <div class="flex space-x-10 text-[10px] tracking-[0.2em] font-medium text-stone/70 uppercase">
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('home')">Home</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('services')">Services</span>
+                        <span class="cursor-pointer hover:text-peach transition" onclick="navigateToPage('contact')">Contact</span>
+                    </div>
+                    <div class="text-[10px] text-stone/50 tracking-[0.2em] uppercase text-center md:text-right leading-loose">
+                        © 2026 THE EUPHORIC SOUL<br>SANCTUARY.<br>MUMBAI, MAHARASHTRA.
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+    </main>
+
+    <div id="booking-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="text-center mb-8">
+                <p class="tracking-[0.2em] uppercase text-xs text-sage mb-2">Reservations</p>
+                <h3 class="font-serif text-3xl text-stone">Secure Your Session</h3>
+            </div>
+            <form onsubmit="event.preventDefault(); alert('Request sent securely to concierge.'); closeModal();">
+                <input type="text" placeholder="Full Name" required>
+                <input type="tel" placeholder="Phone Number" required>
+                <input type="date" required class="text-stone/70">
+                <select required class="text-stone/70">
+                    <option value="" disabled selected>Select Ritual</option>
+                    <option>Korean Hair & Scalp Alchemy</option>
+                    <option>Skin Radiance Metamorphosis</option>
+                    <option>Body Restoration Massage</option>
+                    <option>Nail Artistry & Grooming</option>
+                </select>
+                <button type="submit" class="w-full mt-6 px-8 py-4 bg-sage text-white uppercase tracking-widest text-xs rounded-full hover:bg-stone transition cursor-pointer">Confirm Booking Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        let swiperInstance;
+
+        function navigateToPage(pageId) {
+            const allPages = document.querySelectorAll('.page-section');
+            allPages.forEach(page => page.classList.remove('active-section'));
+
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.classList.add('active-section');
+                
+                if (pageId === 'home' && swiperInstance) {
+                    swiperInstance.update();
+                }
+
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function openModal() {
+            document.getElementById('booking-modal').classList.add('active');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            document.getElementById('booking-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            });
+
+            swiperInstance = new Swiper('.heroSwiper', {
+                loop: true,
+                effect: 'fade',
+                fadeEffect: { crossFade: true }, 
+                speed: 1500,
+                autoplay: { delay: 4000, disableOnInteraction: false },
+                pagination: { el: '.swiper-pagination', clickable: true }
+            });
+
+            document.getElementById('booking-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
